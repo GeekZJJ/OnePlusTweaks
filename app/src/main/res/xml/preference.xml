@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!--    <PreferenceCategory-->
+<!--        android:title="@string/group_fix"-->
+<!--        android:key="perf_group_fix">-->
+
+<!--        <SwitchPreference-->
+<!--            android:defaultValue="false"-->
+<!--            android:key="switch_preference_1"-->
+<!--            android:title="@string/fix_partital_screenshot" />-->
+<!--    </PreferenceCategory>-->
+<!--    <EditTextPreference android:title="Your Name"-->
+<!--        android:key="username"-->
+<!--        android:summary="Please provide your username"/>-->
+<!--    <CheckBoxPreference android:title="Application Updates"-->
+<!--        android:defaultValue="false"-->
+<!--        android:summary="This option if selected will allow the application to check for latest versions."-->
+<!--        android:key="applicationUpdates" />-->
+<!--    <ListPreference     android:title="Download Details"-->
+<!--        android:summary="Select the kind of data that you would like to download"-->
+<!--        android:key="downloadType"-->
+<!--        android:defaultValue="1"-->
+<!--        android:entries="@array/listArray"-->
+<!--        android:entryValues="@array/listValues" />-->
+
+    <PreferenceCategory android:title="@string/volume_panel_mod">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="volume_panel_expanded"
+            android:title="@string/volume_panel_expanded" />
+        <MultiSelectListPreference
+            android:defaultValue="@array/default_streams_values"
+            android:title="@string/volume_panel_items"
+            android:key="volume_panel_items"
+            android:entries="@array/streams_entries"
+            android:entryValues="@array/streams_values"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/hotspot_mod">
+<!--        <SwitchPreference-->
+<!--            android:defaultValue="false"-->
+<!--            android:key="hotspot_acs_enabled"-->
+<!--            android:title="@string/hotspot_acs_enabled" />-->
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="hotspot_hidden_ssid"
+            android:title="@string/hotspot_hidden_ssid" />
+        <ListPreference
+            android:defaultValue="11"
+            android:key="hotspot_2G_channel"
+            android:title="@string/hotspot_2G_channel"
+            android:entries="@array/hotspot_2G_entries"
+            android:entryValues="@array/hotspot_2G_entries_values"/>
+        <ListPreference
+            android:defaultValue="44"
+            android:key="hotspot_5G_channel"
+            android:title="@string/hotspot_5G_channel"
+            android:entries="@array/hotspot_5G_entries"
+            android:entryValues="@array/hotspot_5G_entries_values"/>
+    </PreferenceCategory>
+</PreferenceScreen>

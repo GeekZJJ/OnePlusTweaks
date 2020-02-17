@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">OnePlusTweaks</string>
+    <string name="volume_panel_items">Volume Panel Items</string>
+    <string name="volume_panel_mod">Volume Panel</string>
+    <string name="volume_panel_expanded">Expand volume panel</string>
+
+    <string-array name="streams_entries">
+        <item>Call</item>
+        <item>Touch</item>
+        <item>Ring</item>
+        <item>Media</item>
+        <item>Alarm</item>
+        <item>Bluetooth</item>
+    </string-array>
+    <string name="hotspot_mod">Hotspot</string>
+    <string name="hotspot_2G_channel">2.4G channel</string>
+    <string name="hotspot_5G_channel">5G channel</string>
+    <string name="hotspot_hidden_ssid">Hide SSID</string>
+</resources>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * Copyright (C) 2013 Peter Gregus for GravityBox Project (C3C076@xda)
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="volume_panel_items">音量面板项目</string>
+    <string name="app_name">氢OS优化</string>
+    <string name="volume_panel_mod">音量面板</string>
+    <string name="volume_panel_expanded">展开音量面板</string>
+
+    <string-array name="streams_entries">
+        <item>通话</item>
+        <item>触屏</item>
+        <item>响铃</item>
+        <item>媒体</item>
+        <item>闹铃</item>
+        <item>蓝牙</item>
+    </string-array>
+    <string name="hotspot_mod">WiFi热点</string>
+    <string name="hotspot_2G_channel">2.4G信道</string>
+    <string name="hotspot_5G_channel">5G信道</string>
+    <string name="hotspot_hidden_ssid">隐藏SSID</string>
+
+    <string-array name="hotspot_2G_entries">
+        <item>自动</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+    </string-array>
+    <string-array name="hotspot_5G_entries">
+        <item>自动</item>
+        <item>36</item>
+        <item>38</item>
+        <item>40</item>
+        <item>44</item>
+        <item>48</item>
+        <item>149</item>
+        <item>153</item>
+        <item>157</item>
+        <item>161</item>
+    </string-array>
+</resources>
