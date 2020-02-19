@@ -98,6 +98,16 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
                     intent.putExtra(key,value);
                     break;
                 }
+                case Common.KEY_RECENTS_ADD_CLEAR_BTN:{
+                    Boolean value = SP.getBoolean(Common.KEY_RECENTS_ADD_CLEAR_BTN,Common.DEFAULT_RECENTS_ADD_CLEAR_BTN);
+                    intent.putExtra(key,value);
+                    break;
+                }
+                case Common.KEY_CLEAR_RECENTS_LOCATION:{
+                    int value = Integer.parseInt(SP.getString(Common.KEY_CLEAR_RECENTS_LOCATION,Integer.toString(Common.DEFAULT_CLEAR_RECENTS_LOCATION)));
+                    intent.putExtra(key,value);
+                    break;
+                }
             }
             if (intent.getAction() != null) {
                 sendBroadcast(intent);

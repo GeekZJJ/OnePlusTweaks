@@ -63,4 +63,15 @@
         <item>157</item>
         <item>161</item>
     </string-array>
+    <string name="recents_mod">最近任务</string>
+    <string name="recents_add_clear_button">一键清理按钮</string>
+    <string name="recents_clear_button_location">清理按钮位置</string>
+    <string-array name="recents_clear_button_location_entries">
+        <item>右上</item>
+        <item>左上</item>
+        <item>中上</item>
+        <item>右下</item>
+        <item>左下</item>
+        <item>中下</item>
+    </string-array>
 </resources>

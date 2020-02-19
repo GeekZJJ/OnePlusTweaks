@@ -50,12 +50,20 @@ public class SystemUISettings {
                 String action = intent.getAction();
                 if (action.equals(Common.ACTION_SETTINGS_CHANGED)) {
                     if (intent.hasExtra(Common.KEY_VOLUME_PANEL_EXPANDED)) {
-                        Boolean volumeExpand = intent.getBooleanExtra(Common.KEY_VOLUME_PANEL_EXPANDED, true);
+                        Boolean volumeExpand = intent.getBooleanExtra(Common.KEY_VOLUME_PANEL_EXPANDED, Common.DEFAULT_VOLUME_PANEL_EXPANDED);
                         VolumePanel.setmVolumePanelExpanded(volumeExpand);
                     }
                     if (intent.hasExtra(Common.KEY_VOLUME_EXPAND_STREAMS)) {
                         HashSet<String> streams = (HashSet<String>) intent.getSerializableExtra(Common.KEY_VOLUME_EXPAND_STREAMS);
                         VolumePanel.setVolumePanelExpandedStreams(streams);
+                    }
+                    if (intent.hasExtra(Common.KEY_RECENTS_ADD_CLEAR_BTN)) {
+                        Boolean add = intent.getBooleanExtra(Common.KEY_RECENTS_ADD_CLEAR_BTN, Common.DEFAULT_RECENTS_ADD_CLEAR_BTN);
+                        Recents.setRecentsAddClearBtn(add);
+                    }
+                    if (intent.hasExtra(Common.KEY_CLEAR_RECENTS_LOCATION)) {
+                        int location = intent.getIntExtra(Common.KEY_CLEAR_RECENTS_LOCATION, Common.DEFAULT_CLEAR_RECENTS_LOCATION);
+                        Recents.setClearRecentsLocation(location);
                     }
                 }
             }catch (Exception e) {

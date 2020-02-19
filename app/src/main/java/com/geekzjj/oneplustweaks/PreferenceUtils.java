@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedBridge;
 
 public class PreferenceUtils {
 
@@ -18,7 +17,6 @@ public class PreferenceUtils {
             String packageName = Module.class.getPackage().getName();
             String prefFileName = Module.class.getPackage().getName();
             File prefFile = new File(Environment.getDataDirectory(), "user_de/0/" + packageName + "/shared_prefs/" + prefFileName + "_preferences.xml");
-//            XposedBridge.log(prefFile.getAbsolutePath()+", existance="+prefFile.exists());
             instance = new XSharedPreferences(prefFile);
             instance.makeWorldReadable();
         }else {
@@ -41,6 +39,14 @@ public class PreferenceUtils {
 
     public static boolean getVolumePanelExpanded(){
         return getBooleanPreference(Common.KEY_VOLUME_PANEL_EXPANDED,Common.DEFAULT_VOLUME_PANEL_EXPANDED);
+    }
+
+    public static int getClearRecentsLocation(){
+        return getIntPreference(Common.KEY_CLEAR_RECENTS_LOCATION,Common.DEFAULT_CLEAR_RECENTS_LOCATION);
+    }
+
+    public static boolean getRecentsAddClearBtn(){
+        return getBooleanPreference(Common.KEY_RECENTS_ADD_CLEAR_BTN,Common.DEFAULT_RECENTS_ADD_CLEAR_BTN);
     }
 
     public static HashSet<String> getVolumePanelItems(){

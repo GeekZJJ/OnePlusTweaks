@@ -16,4 +16,7 @@
     <string name="hotspot_2G_channel">2.4G channel</string>
     <string name="hotspot_5G_channel">5G channel</string>
     <string name="hotspot_hidden_ssid">Hide SSID</string>
+    <string name="recents_mod">Recents</string>
+    <string name="recents_add_clear_button">Clear all button</string>
+    <string name="recents_clear_button_location">Clear all button location</string>
 </resources>

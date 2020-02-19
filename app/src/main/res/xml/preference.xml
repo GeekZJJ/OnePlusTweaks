@@ -37,10 +37,6 @@
             android:entryValues="@array/streams_values"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/hotspot_mod">
-<!--        <SwitchPreference-->
-<!--            android:defaultValue="false"-->
-<!--            android:key="hotspot_acs_enabled"-->
-<!--            android:title="@string/hotspot_acs_enabled" />-->
         <SwitchPreference
             android:defaultValue="false"
             android:key="hotspot_hidden_ssid"
@@ -57,5 +53,17 @@
             android:title="@string/hotspot_5G_channel"
             android:entries="@array/hotspot_5G_entries"
             android:entryValues="@array/hotspot_5G_entries_values"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/recents_mod">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="recents_add_clear_button"
+            android:title="@string/recents_add_clear_button" />
+        <ListPreference
+            android:defaultValue="3"
+            android:key="recents_clear_button_location"
+            android:title="@string/recents_clear_button_location"
+            android:entries="@array/recents_clear_button_location_entries"
+            android:entryValues="@array/recents_clear_button_location_values"/>
     </PreferenceCategory>
 </PreferenceScreen>

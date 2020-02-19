@@ -73,4 +73,20 @@
         <item>157</item>
         <item>161</item>
     </string-array>
+    <string-array name="recents_clear_button_location_entries">
+        <item>Upper right corner</item>
+        <item>Upper left corner</item>
+        <item>Upper center</item>
+        <item>Buttom right corner</item>
+        <item>Buttom left corner</item>
+        <item>Buttom center</item>
+    </string-array>
+    <string-array name="recents_clear_button_location_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 </resources>
