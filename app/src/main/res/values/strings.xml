@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">OnePlusTweaks</string>
     <string name="volume_panel_items">Volume Panel Items</string>
     <string name="volume_panel_mod">Volume Panel</string>
@@ -19,4 +19,9 @@
     <string name="recents_mod">Recents</string>
     <string name="recents_add_clear_button">Clear all button</string>
     <string name="recents_clear_button_location">Clear all button location</string>
+
+    <!-- Content description for Accessibility on unlocked tasks in recents -->
+    <string name="accessibility_lock_task">Prevent <xliff:g id="task">%1$s</xliff:g> from being dismissed</string>
+    <!-- Content description for Accessibility on locked tasks in recents -->
+    <string name="accessibility_unlock_task">Allow <xliff:g id="task">%1$s</xliff:g> to be dismissed</string>
 </resources>

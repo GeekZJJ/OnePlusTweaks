@@ -6,4 +6,9 @@
 
     <color name="fab_color">#ffffffff</color>
     <color name="floating_action_button_icon_color">#000000</color>
+
+    <!-- The recents task bar light dismiss icon color to be drawn on top of dark backgrounds. -->
+    <color name="recents_task_bar_light_icon_color">#ccffffff</color>
+    <!-- The recents task bar dark dismiss icon color to be drawn on top of light backgrounds. -->
+    <color name="recents_task_bar_dark_icon_color">#99000000</color>
 </resources>
