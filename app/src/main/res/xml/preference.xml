@@ -35,6 +35,12 @@
             android:key="volume_panel_items"
             android:entries="@array/streams_entries"
             android:entryValues="@array/streams_values"/>
+        <ListPreference
+            android:defaultValue="0"
+            android:key="volume_panel_location"
+            android:title="@string/volume_panel_location"
+            android:entries="@array/volume_panel_location_entries"
+            android:entryValues="@array/volume_panel_location_values"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/hotspot_mod">
         <SwitchPreference

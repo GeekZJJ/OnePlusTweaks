@@ -15,6 +15,9 @@
 package com.geekzjj.oneplustweaks.SubModules;
 
 import android.media.AudioManager;
+import android.view.Gravity;
+import android.view.WindowManager;
+
 import com.geekzjj.oneplustweaks.PreferenceUtils;
 
 import java.util.HashSet;
@@ -37,6 +40,7 @@ public class VolumePanel {
     private static boolean mVolumePanelExpanded;
     private static Set<String> mVolumePanelExpandedStreams;
     private static int mTimeout;
+    private static int mVolumePanelLocation = 0;
 
     private static void log(String message) {
         XposedBridge.log(TAG + ": " + message);
@@ -49,6 +53,7 @@ public class VolumePanel {
 
             mVolumePanelExpanded = PreferenceUtils.getVolumePanelExpanded();
             mVolumePanelExpandedStreams = PreferenceUtils.getVolumePanelItems();
+            mVolumePanelLocation = PreferenceUtils.getVolumePanelLocation();
 
             if (DEBUG) log("mVolumePanelExpanded="+mVolumePanelExpanded);
             if (DEBUG) log("mVolumePanelExpandedStreams="+mVolumePanelExpandedStreams.toString());
@@ -56,10 +61,21 @@ public class VolumePanel {
             mTimeout = 0;
 
             XposedBridge.hookAllConstructors(classVolumePanel, new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(final MethodHookParam param) {
+                        mVolumePanel = param.thisObject;
+                    }
+                });
+
+
+            XposedHelpers.findAndHookMethod(classVolumePanel, "initDialog", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(final MethodHookParam param) {
-                    mVolumePanel = param.thisObject;
-                    if (DEBUG) log("VolumePanel constructed; mVolumePanel set");
+//                    XposedBridge.log("initDialog,"+mVolumePanelLocation);
+                    Object mWindow = XposedHelpers.getObjectField(param.thisObject,"mWindow");
+                    WindowManager.LayoutParams lp = (WindowManager.LayoutParams) XposedHelpers.callMethod(mWindow,"getAttributes");
+                    lp.gravity = ( mVolumePanelLocation==0 ? Gravity.LEFT : Gravity.RIGHT ) | Gravity.CENTER_VERTICAL;
+                    XposedHelpers.callMethod(mWindow,"setAttributes",lp);
                 }
             });
 
@@ -100,5 +116,12 @@ public class VolumePanel {
 
     public static void setmVolumePanelExpanded(boolean b) {
         mVolumePanelExpanded = b;
+    }
+    public static void setVolumePanelLocation(int location) {
+        mVolumePanelLocation = location;
+        Object mWindow = XposedHelpers.getObjectField(mVolumePanel,"mWindow");
+        WindowManager.LayoutParams lp = (WindowManager.LayoutParams) XposedHelpers.callMethod(mWindow,"getAttributes");
+        lp.gravity = ( mVolumePanelLocation==0 ? Gravity.LEFT : Gravity.RIGHT ) | Gravity.CENTER_VERTICAL;
+        XposedHelpers.callMethod(mWindow,"setAttributes",lp);
     }
 }

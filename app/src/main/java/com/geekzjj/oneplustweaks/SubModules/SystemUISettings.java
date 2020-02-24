@@ -57,6 +57,10 @@ public class SystemUISettings {
                         HashSet<String> streams = (HashSet<String>) intent.getSerializableExtra(Common.KEY_VOLUME_EXPAND_STREAMS);
                         VolumePanel.setVolumePanelExpandedStreams(streams);
                     }
+                    if (intent.hasExtra(Common.KEY_VOLUME_PANEL_LOCATION)) {
+                        int location = intent.getIntExtra(Common.KEY_VOLUME_PANEL_LOCATION,Common.DEFAULT_VOLUME_PANEL_LOCATION);
+                        VolumePanel.setVolumePanelLocation(location);
+                    }
                     if (intent.hasExtra(Common.KEY_RECENTS_ADD_CLEAR_BTN)) {
                         Boolean add = intent.getBooleanExtra(Common.KEY_RECENTS_ADD_CLEAR_BTN, Common.DEFAULT_RECENTS_ADD_CLEAR_BTN);
                         Recents.setRecentsAddClearBtn(add);

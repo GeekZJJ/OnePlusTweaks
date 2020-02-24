@@ -49,6 +49,10 @@ public class PreferenceUtils {
         return getBooleanPreference(Common.KEY_RECENTS_ADD_CLEAR_BTN,Common.DEFAULT_RECENTS_ADD_CLEAR_BTN);
     }
 
+    public static int getVolumePanelLocation(){
+        return getIntPreference(Common.KEY_VOLUME_PANEL_LOCATION,Common.DEFAULT_VOLUME_PANEL_LOCATION);
+    }
+
     public static HashSet<String> getVolumePanelItems(){
         return (HashSet<String>) getInstance().getStringSet(Common.KEY_VOLUME_EXPAND_STREAMS,new HashSet<>(Arrays.asList(Common.DEFAULT_VOLUME_EXPAND_STREAMS)));
     }

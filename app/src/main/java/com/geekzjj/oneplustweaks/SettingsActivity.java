@@ -14,6 +14,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import de.robv.android.xposed.XposedBridge;
+
 @SuppressLint("SetWorldReadable")
 @SuppressWarnings({"deprecation","ResultOfMethodCallIgnored"})
 public class SettingsActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -80,6 +82,11 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
                 }
                 case Common.KEY_VOLUME_PANEL_EXPANDED:{
                     Boolean value = SP.getBoolean(Common.KEY_VOLUME_PANEL_EXPANDED,Common.DEFAULT_VOLUME_PANEL_EXPANDED);
+                    intent.putExtra(key,value);
+                    break;
+                }
+                case Common.KEY_VOLUME_PANEL_LOCATION:{
+                    int value = Integer.parseInt(SP.getString(Common.KEY_VOLUME_PANEL_LOCATION,Integer.toString(Common.DEFAULT_VOLUME_PANEL_LOCATION)));
                     intent.putExtra(key,value);
                     break;
                 }

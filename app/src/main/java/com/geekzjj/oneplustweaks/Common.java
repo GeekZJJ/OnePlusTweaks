@@ -9,6 +9,7 @@ public class Common {
 
     public static final String KEY_VOLUME_EXPAND_STREAMS = "volume_panel_items";
     public static final String KEY_VOLUME_PANEL_EXPANDED = "volume_panel_expanded";
+    public static final String KEY_VOLUME_PANEL_LOCATION = "volume_panel_location";
 
     public static final String KEY_HOTSPOT_HIDDEN_SSID = "hotspot_hidden_ssid";
     public static final String KEY_HOTSPOT_2G_CHANNEL = "hotspot_2G_channel";
@@ -19,6 +20,7 @@ public class Common {
 
     public static final boolean DEFAULT_VOLUME_PANEL_EXPANDED = false;
     public static final String[] DEFAULT_VOLUME_EXPAND_STREAMS = {"3", "2", "4","0"};
+    public static final int DEFAULT_VOLUME_PANEL_LOCATION = 1;
 
     public static final int DEFAULT_HOTSPOT_2G_CHANNEL = 11;
     public static final int DEFAULT_HOTSPOT_5G_CHANNEL = 44;

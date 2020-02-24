@@ -29,6 +29,10 @@
         <item>闹铃</item>
         <item>蓝牙</item>
     </string-array>
+    <string-array name="volume_panel_location_entries">
+        <item>左边</item>
+        <item>右边</item>
+    </string-array>
     <string name="hotspot_mod">WiFi热点</string>
     <string name="hotspot_2G_channel">2.4G信道</string>
     <string name="hotspot_5G_channel">5G信道</string>
@@ -79,4 +83,5 @@
     <string name="accessibility_lock_task">锁定 <xliff:g id="task">%1$s</xliff:g> 任务</string>
     <!-- Content description for Accessibility on locked tasks in recents -->
     <string name="accessibility_unlock_task">解锁 <xliff:g id="task">%1$s</xliff:g> 任务</string>
+    <string name="volume_panel_location">音量面板位置</string>
 </resources>
