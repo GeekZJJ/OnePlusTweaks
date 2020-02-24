@@ -15,6 +15,7 @@ import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ public class Recents {
 
     public static Activity mRecentsActivity;
 
+    static Drawable selectableItemBackground;
     static View mFloatingButtonLayout;
     static View mFloatingButton;
 
@@ -341,8 +343,19 @@ public class Recents {
                     mDarkUnlockedDrawable = mGbContext.getDrawable(R.drawable.recents_unlocked_dark);
                 }
 
+                if(selectableItemBackground==null){
+                    TypedValue typedValue = new TypedValue();
+                    Context context = (Context)param.args[0];
+                    context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, typedValue, true);
+                    int[] attribute = new int[] { android.R.attr.selectableItemBackground};
+                    TypedArray typedArray = context.getTheme().obtainStyledAttributes(typedValue.resourceId, attribute);
+                    selectableItemBackground = typedArray.getDrawable(0);
+                    typedArray.recycle();
+                }
+
                 ImageView lockBtn = new ImageView(vg.getContext());
                 lockBtn.setImageDrawable(mLightLockedDrawable);
+                lockBtn.setBackground(selectableItemBackground);
                 int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, view.getResources().getDisplayMetrics());
                 lockBtn.setPadding(padding,padding,padding,padding);
                 FrameLayout.LayoutParams lParams = new FrameLayout.LayoutParams(WRAP_CONTENT,WRAP_CONTENT,Gravity.CENTER_VERTICAL|Gravity.END);
