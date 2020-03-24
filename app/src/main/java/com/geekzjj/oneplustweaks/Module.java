@@ -2,6 +2,7 @@ package com.geekzjj.oneplustweaks;
 
 
 import com.geekzjj.oneplustweaks.SubModules.FixOPScreenShotCrash;
+import com.geekzjj.oneplustweaks.SubModules.OPFeatures;
 import com.geekzjj.oneplustweaks.SubModules.Recents;
 import com.geekzjj.oneplustweaks.SubModules.SystemUISettings;
 import com.geekzjj.oneplustweaks.SubModules.VolumePanel;
@@ -21,6 +22,12 @@ public class Module implements IXposedHookLoadPackage {
             SystemUISettings.init(lpparam.classLoader);
             Recents.init(lpparam.classLoader);
             VolumePanel.init(lpparam.classLoader);
+        } else if (lpparam.packageName.equals(Common.PACKAGE_ONEPLUS_MMS)) {
+            OPFeatures.init(lpparam);
+        } else if (lpparam.packageName.equals(Common.PACKAGE_ONEPLUS_DIALER)) {
+            OPFeatures.init(lpparam);
+        } else if (lpparam.packageName.equals(Common.PACKAGE_ONEPLUS_DESKCLOCK)) {
+            OPFeatures.init(lpparam);
         }
     }
 }

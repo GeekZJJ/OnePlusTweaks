@@ -2,6 +2,9 @@ package com.geekzjj.oneplustweaks;
 
 public class Common {
     public static String PACKAGE_ONEPLUS_SCREENSHOT = "com.oneplus.screenshot";
+    public static String PACKAGE_ONEPLUS_DIALER = "com.android.dialer";
+    public static String PACKAGE_ONEPLUS_MMS = "com.android.mms";
+    public static String PACKAGE_ONEPLUS_DESKCLOCK = "com.oneplus.deskclock";
     public static String PACKAGE_ANDROID = "android";
     public static String PACKAGE_SYSTEMUI = "com.android.systemui";
 
