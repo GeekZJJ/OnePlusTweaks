@@ -2,6 +2,7 @@ package com.geekzjj.oneplustweaks.SubModules;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import com.geekzjj.oneplustweaks.Common;
 import com.geekzjj.oneplustweaks.R;
 import com.geekzjj.oneplustweaks.Module;
 import com.geekzjj.oneplustweaks.PreferenceUtils;
@@ -15,10 +16,13 @@ import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.ComponentName;
 import android.content.res.TypedArray;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -32,9 +36,13 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Recents {
     public static final String TAG = "Recents ";
+
+    private static String SETTINGS_TASK_LOCKED_LIST = "oneplus_tweaks_systemui_recent_task_locked_list";
 
     public static Context mGbContext;
     public static Context mContext;
@@ -51,10 +59,10 @@ public class Recents {
     //3:右下
     //4:左下
     //5:中下
-    static int clearRecentsLocation = 5;
-    static boolean recentsAddClearBtn = false;
+    static int clearRecentsLocation = Common.DEFAULT_CLEAR_RECENTS_LOCATION;
+    static boolean recentsAddClearBtn = Common.DEFAULT_RECENTS_ADD_CLEAR_BTN;
 
-    public final static Set<Object> sLockedTasks = new HashSet<>();
+    public final static Set<String> sLockedTasks = new HashSet<>();
     public static Drawable mLightLockedDrawable;
     public static Drawable mLightUnlockedDrawable;
     public static Drawable mDarkLockedDrawable;
@@ -65,17 +73,19 @@ public class Recents {
     public static int DismissSourceHeaderButton = 2;
 
     public static void setRecentsAddClearBtn(boolean recentsAddClearBtn) {
+        XposedBridge.log("setRecentsAddClearBtn="+recentsAddClearBtn);
         Recents.recentsAddClearBtn = recentsAddClearBtn;
     }
 
     public static void setClearRecentsLocation(int clearRecentsLocation) {
+        XposedBridge.log("setClearRecentsLocation="+clearRecentsLocation);
         Recents.clearRecentsLocation = clearRecentsLocation;
     }
 
     public static void init(final ClassLoader classLoader) {
 
-        clearRecentsLocation = PreferenceUtils.getClearRecentsLocation();
-        recentsAddClearBtn = PreferenceUtils.getRecentsAddClearBtn();
+        clearRecentsLocation = Common.DEFAULT_CLEAR_RECENTS_LOCATION;
+        recentsAddClearBtn = Common.DEFAULT_RECENTS_ADD_CLEAR_BTN;
         final Class<?> recentActivityClass = XposedHelpers.findClass("com.android.systemui.recents.RecentsActivity", classLoader);
         final Class<?> eventBusClazz = XposedHelpers.findClass("com.android.systemui.recents.events.EventBus",classLoader);
         final Class<?> dismissAllTaskViewsEventClazz = XposedHelpers.findClass("com.android.systemui.recents.events.ui.DismissAllTaskViewsEvent",classLoader);
@@ -234,8 +244,8 @@ public class Recents {
 //                        XposedBridge.log("beforeHookedMethod removeTask");
                         // Update the top level view's visibilities
                         Object t = param.args[0];
-                        if (sLockedTasks.contains(t)) {
-                            sLockedTasks.remove(t);
+                        if (isTaskLocked(t)) {
+                            unlockTask(t);
                         }
                     }
                 });
@@ -249,10 +259,11 @@ public class Recents {
                 Object mStackTaskList = XposedHelpers.getObjectField(TaskStackObject,"mStackTaskList");
                 Object mRawTaskList = XposedHelpers.getObjectField(TaskStackObject,"mRawTaskList");
                 Object mCb = XposedHelpers.getObjectField(TaskStackObject,"mCb");
-                ArrayList<?> tasks = (ArrayList<?>) XposedHelpers.callMethod(mStackTaskList,"getTasks");
+                ArrayList<?> tasks = new ArrayList<>();
+                tasks.addAll((ArrayList) XposedHelpers.callMethod(mStackTaskList,"getTasks"));
                 for (int i = tasks.size() - 1; i >= 0; i--) {
                     Object t = tasks.get(i);
-                    if (sLockedTasks.contains(t)) {
+                    if (isTaskLocked(t)) {
                         continue;
                     }
                     XposedHelpers.callMethod(mStackTaskList,"remove",t);
@@ -279,7 +290,7 @@ public class Recents {
                 ArrayList deletedTasks = new ArrayList<>();
                 ArrayList taskViews = new ArrayList<>((ArrayList<Object>) XposedHelpers.callMethod(TaskStackViewObject,"getTaskViews"));
                 for (Object t : taskViews) {
-                    if (sLockedTasks.contains(XposedHelpers.callMethod(t,"getTask"))) {
+                    if (isTaskLocked(XposedHelpers.callMethod(t,"getTask"))) {
                         deletedTasks.add(t);
                     }
                 }
@@ -296,7 +307,7 @@ public class Recents {
                         XposedHelpers.callMethod(mStack,"removeAllTasks",true);
                         for (int i = tasks.size() - 1; i >= 0; i--) {
                             Object t = tasks.get(i);
-                            if (sLockedTasks.contains(t)) continue;
+                            if (isTaskLocked(t)) continue;
                             Object EventBusObject = XposedHelpers.callStaticMethod(eventBusClazz,"getDefault");
                             XposedHelpers.callMethod(EventBusObject,"send",XposedHelpers.newInstance(deleteTaskDataEventClazz,t));
                         }
@@ -313,7 +324,7 @@ public class Recents {
 //                XposedBridge.log("replace getChildAtPosition");
                 MotionEvent ev = (MotionEvent) methodHookParam.args[0];
                 Object tv = XposedHelpers.callMethod(methodHookParam.thisObject,"findViewAtPoint",(int) ev.getX(), (int) ev.getY());
-                if (tv != null && ((boolean)XposedHelpers.callMethod(methodHookParam.thisObject,"canChildBeDismissed",tv) || sLockedTasks.contains(  XposedHelpers.callMethod(tv,"getTask")  ))) {
+                if (tv != null && ((boolean)XposedHelpers.callMethod(methodHookParam.thisObject,"canChildBeDismissed",tv) && !isTaskLocked(  XposedHelpers.callMethod(tv,"getTask")  ))) {
                     return tv;
                 }
                 return null;
@@ -421,11 +432,14 @@ public class Recents {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 //                        XposedBridge.log("bindToTask");
                         mTask = XposedHelpers.getObjectField(param.thisObject, "mTask");
-                        updateLockTaskDrawable(getLockTaskButton(param.thisObject));
-                        getLockTaskButton(param.thisObject).setOnClickListener((View.OnClickListener) param.thisObject);
-                        getLockTaskButton(param.thisObject).setClickable(false);
-                        getLockTaskButton(param.thisObject).setAlpha(0f);
-                        XposedHelpers.callMethod(getLockTaskButton(param.thisObject).getBackground(),"setForceSoftware",true);
+                        ImageView btn = getLockTaskButton(param.thisObject);
+                        if(btn!=null) {
+                            updateLockTaskDrawable(btn);
+                            btn.setOnClickListener((View.OnClickListener) param.thisObject);
+                            btn.setClickable(false);
+                            btn.setAlpha(0f);
+                            XposedHelpers.callMethod(((RippleDrawable) (btn.getBackground())), "setForceSoftware", true);
+                        }
                     }
                 });
 
@@ -437,6 +451,33 @@ public class Recents {
 //                        XposedBridge.log("onBusEvent TaskViewDismissedEvent");
 //                    }
 //                });
+
+        XposedHelpers.findAndHookMethod("com.android.systemui.recents.Recents", classLoader,"onBootCompleted",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if(mGbContext!=null){
+                            String str = Settings.System.getString(mGbContext.getContentResolver(), SETTINGS_TASK_LOCKED_LIST);
+                            Pattern p = Pattern.compile("\\{([^}]*)\\}");
+                            if(str!=null){
+                                Matcher m = p.matcher(str);
+                                while (m.find()) {
+                                    String s = m.group().substring(1, m.group().length() - 1);
+                                    sLockedTasks.add(s);
+                                }
+                                XposedBridge.log("onBootCompleted: sLockedTasks = "+sLockedTasks);
+                            }
+                        } else {
+                            XposedBridge.log("onBootCompleted: mGbContext==null");
+                        }
+                        setClearRecentsLocation(PreferenceUtils.getClearRecentsLocation());
+                        setRecentsAddClearBtn(PreferenceUtils.getRecentsAddClearBtn());
+                        VolumePanel.setmVolumePanelExpanded(PreferenceUtils.getVolumePanelExpanded());
+                        VolumePanel.setVolumePanelExpandedStreams(PreferenceUtils.getVolumePanelItems());
+                        VolumePanel.setVolumePanelLocation(PreferenceUtils.getVolumePanelLocation());
+                    }
+                });
+
 
         XposedHelpers.findAndHookMethod("com.android.systemui.recents.views.TaskView", classLoader,"dismissTask",
                 new XC_MethodHook() {
@@ -474,10 +515,24 @@ public class Recents {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 //                        XposedBridge.log("setNoUserInteractionState");
-                        getLockTaskButton(param.thisObject).setVisibility(View.VISIBLE);
-                        getLockTaskButton(param.thisObject).animate().cancel();
-                        getLockTaskButton(param.thisObject).setAlpha(1f);
-                        getLockTaskButton(param.thisObject).setClickable(true);
+                        ImageView btn = getLockTaskButton(param.thisObject);
+                        if(btn!=null){
+                            btn.setVisibility(View.VISIBLE);
+                            btn.animate().cancel();
+                            btn.setAlpha(1f);
+                            btn.setClickable(true);
+                        }
+                    }
+                });
+        XposedHelpers.findAndHookMethod("com.android.systemui.recents.views.TaskViewHeader", classLoader,"resetNoUserInteractionState",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                        XposedBridge.log("setNoUserInteractionState");
+                        ImageView btn = getLockTaskButton(param.thisObject);
+                        btn.setVisibility(View.INVISIBLE);
+                        btn.setAlpha(0f);
+                        btn.setClickable(false);
                     }
                 });
 
@@ -488,20 +543,20 @@ public class Recents {
 //                        XposedBridge.log("onClick");
                         View v = (View) param.args[0];
                         ImageView mDismissButton = (ImageView)XposedHelpers.getObjectField(param.thisObject,"mDismissButton");
-                        mTask = XposedHelpers.getObjectField(param.thisObject, "mTask");
                         if (v == mDismissButton) {
                             Object tv = XposedHelpers.callStaticMethod(utilitiesClazz,"findParent",param.thisObject,taskViewClazz);
-                            if (!sLockedTasks.contains(XposedHelpers.callMethod(tv,"getTask"))) {
+                            if (!isTaskLocked(XposedHelpers.callMethod(tv,"getTask"))) {
                                 XposedHelpers.callMethod(tv,"dismissTask");
                                 // Keep track of deletions by the dismiss button
                                 XposedHelpers.callStaticMethod(metricsLoggerClazz,"histogram",mGbContext,"overview_task_dismissed_source",DismissSourceHeaderButton);
                             }
                             return null;
                         } else if (v == getLockTaskButton(param.thisObject)) {
-                            if (sLockedTasks.contains(mTask)) {
-                                sLockedTasks.remove(mTask);
+                            mTask = XposedHelpers.getObjectField(param.thisObject, "mTask");
+                            if (isTaskLocked(mTask)) {
+                                unlockTask(mTask);
                             } else {
-                                sLockedTasks.add(mTask);
+                                lockTask(mTask);
                             }
                             updateLockTaskDrawable(getLockTaskButton(param.thisObject));
                             return null;
@@ -513,10 +568,13 @@ public class Recents {
     }
 
     private static void updateLockTaskDrawable(ImageView btn) {
+        if(mTask==null){
+            XposedBridge.log("Error updateLockTaskDrawable mTask = null!!!!!!!!!!");
+            return;
+        }
         boolean useLightOnPrimaryColor = XposedHelpers.getBooleanField(mTask,"useLightOnPrimaryColor");
         String title = (String) XposedHelpers.getObjectField(mTask,"title");
-//        XposedBridge.log("useLightOnPrimaryColor="+useLightOnPrimaryColor+",title="+title);
-        if (sLockedTasks.contains(mTask)) {
+        if (isTaskLocked(mTask)) {
             btn.setImageDrawable(useLightOnPrimaryColor ? mLightLockedDrawable : mDarkLockedDrawable);
             btn.setContentDescription(mGbContext.getResources().getString(R.string.accessibility_unlock_task, title));
         } else {
@@ -528,6 +586,46 @@ public class Recents {
 
     private static ImageView getLockTaskButton(Object obj){
         return (ImageView) XposedHelpers.getAdditionalInstanceField(obj,"mLockTaskButton");
+    }
+
+    private static Boolean isTaskLocked(Object task){
+        Object key = XposedHelpers.getObjectField(task,"key");
+        ComponentName topActivity = (ComponentName) XposedHelpers.callMethod(key,"getComponent");
+        if(topActivity!=null){
+            if(topActivity.getClassName().startsWith("com.tencent.mm.plugin.appbrand.ui.AppBrandUI")){
+                return false;
+            } else {
+                return sLockedTasks.contains(topActivity.getPackageName());
+            }
+        } else {
+            String s = (String) XposedHelpers.callMethod(key,"getPackageName");
+            XposedBridge.log("isTaskLocked: "+s+" getComponent()==null!!!");
+            return sLockedTasks.contains(s);
+        }
+    }
+
+    private static void lockTask(Object task){
+        Object key = XposedHelpers.getObjectField(task,"key");
+        String taskName = (String) XposedHelpers.callMethod(key,"getPackageName");
+        XposedBridge.log("lockTask: "+taskName);
+        sLockedTasks.add(taskName);
+        String settingsStr = "";
+        for(String s:sLockedTasks){
+            settingsStr += String.format("{%s}",s);
+        }
+        Settings.System.putString(mGbContext.getContentResolver(),SETTINGS_TASK_LOCKED_LIST,settingsStr);
+    }
+
+    private static void unlockTask(Object task){
+        Object key = XposedHelpers.getObjectField(task,"key");
+        String taskName = (String) XposedHelpers.callMethod(key,"getPackageName");
+        sLockedTasks.remove(taskName);
+        XposedBridge.log("unlockTask: "+taskName);
+        String settingsStr = "";
+        for(String s:sLockedTasks){
+            settingsStr += String.format("{%s}",s);
+        }
+        Settings.System.putString(mGbContext.getContentResolver(),SETTINGS_TASK_LOCKED_LIST,settingsStr);
     }
 
     public static synchronized Context getGbContext(Context context) throws Throwable {
