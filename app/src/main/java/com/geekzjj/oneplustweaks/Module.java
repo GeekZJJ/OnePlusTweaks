@@ -28,6 +28,10 @@ public class Module implements IXposedHookLoadPackage {
             OPFeatures.init(lpparam);
         } else if (lpparam.packageName.equals(Common.PACKAGE_ONEPLUS_DESKCLOCK)) {
             OPFeatures.init(lpparam);
-        }
+        } else if (lpparam.packageName.equals(Common.PACKAGE_ONEPLUS_CONFIG)) {
+            OPFeatures.init(lpparam);
+        }/* else if (lpparam.packageName.equals(Common.PACKAGE_ANCROID_PHONE)) {
+            OPFeatures.init(lpparam);
+        }*/
     }
 }
