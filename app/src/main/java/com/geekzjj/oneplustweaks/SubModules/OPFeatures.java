@@ -13,13 +13,14 @@ public class OPFeatures {
                 int[] features = (int[])param.args[0];
                 if(features.length!=1){
                     XposedBridge.log(lpparam.packageName+": OpFeatures, "+features);
-                }
-                if(features[0]==1){
-                    //OP_FEATURE_SKU_GLOBAL
-                    param.setResult(false);
-                } else if(features[0]==0){
-                    //OP_FEATURE_SKU_CHINA
-                    param.setResult(true);
+                } else {
+                    if(features[0]==1){
+                        //OP_FEATURE_SKU_GLOBAL
+                        param.setResult(false);
+                    } else if(features[0]==0){
+                        //OP_FEATURE_SKU_CHINA
+                        param.setResult(true);
+                    }
                 }
             }
         });
