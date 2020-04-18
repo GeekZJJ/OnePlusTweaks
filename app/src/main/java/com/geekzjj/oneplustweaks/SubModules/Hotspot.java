@@ -44,11 +44,9 @@ public class Hotspot {
             XposedBridge.log(TAG+"softApListenerClass ok!");
         }*/
 
-        hiddenSSID = PreferenceUtils.getHotspotHiddenSSID();
-        hotspot2GChannel = PreferenceUtils.getHotspot2GChannel();
-        hotspot5GChannel = PreferenceUtils.getHotspot5GChannel();
-        XposedBridge.log(TAG+"load preference:hotspot2GChannel="+hotspot2GChannel
-                +" hotspot5GChannel="+hotspot5GChannel +" hiddenSSID="+hiddenSSID);
+        hiddenSSID = Common.DEFAULT_HOTSPOT_HIDDEN_SSID;
+        hotspot2GChannel = Common.DEFAULT_HOTSPOT_2G_CHANNEL;
+        hotspot5GChannel = Common.DEFAULT_HOTSPOT_5G_CHANNEL;
 
         XposedHelpers.findAndHookConstructor("com.android.server.wifi.HostapdHal", classLoader, Context.class,  new XC_MethodHook() {
             @Override
@@ -64,6 +62,20 @@ public class Hotspot {
                     protected void afterHookedMethod(final MethodHookParam param) {
 //                        XposedBridge.log(TAG+"hook getRandomWifiIPv4Address");
                         param.setResult(WIFI_HOST_IFACE_ADDR);
+                    }
+                });
+
+
+        XposedHelpers.findAndHookMethod("com.android.server.power.batterysaver.BatterySaverStateMachine", classLoader,"onBootCompleted",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        hiddenSSID = PreferenceUtils.getHotspotHiddenSSID();
+                        hotspot2GChannel = PreferenceUtils.getHotspot2GChannel();
+                        hotspot5GChannel = PreferenceUtils.getHotspot5GChannel();
+                        XposedBridge.log(TAG+"Hotspot hook onBootCompleted,load preference:hotspot2GChannel="+hotspot2GChannel
+                                +" hotspot5GChannel="+hotspot5GChannel +" hiddenSSID="+hiddenSSID);
+
                     }
                 });
 
