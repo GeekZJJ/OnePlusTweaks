@@ -18,6 +18,7 @@ import android.media.AudioManager;
 import android.view.Gravity;
 import android.view.WindowManager;
 
+import com.geekzjj.oneplustweaks.Common;
 import com.geekzjj.oneplustweaks.PreferenceUtils;
 
 import java.util.HashSet;
@@ -50,10 +51,9 @@ public class VolumePanel {
         try {
             final Class<?> classVolumePanel = XposedHelpers.findClass(CLASS_VOLUME_PANEL, classLoader);
 
-
-            mVolumePanelExpanded = PreferenceUtils.getVolumePanelExpanded();
             mVolumePanelExpandedStreams = PreferenceUtils.getVolumePanelItems();
-            mVolumePanelLocation = PreferenceUtils.getVolumePanelLocation();
+            mVolumePanelExpanded = Common.DEFAULT_VOLUME_PANEL_EXPANDED;
+            mVolumePanelLocation = Common.DEFAULT_VOLUME_PANEL_LOCATION;
 
             if (DEBUG) log("mVolumePanelExpanded="+mVolumePanelExpanded);
             if (DEBUG) log("mVolumePanelExpandedStreams="+mVolumePanelExpandedStreams.toString());
@@ -92,7 +92,6 @@ public class VolumePanel {
                             streamType == AudioManager.STREAM_SYSTEM)) {
                         param.setResult(mVolumePanelExpandedStreams.contains(String.valueOf(streamType)));
                     }
-
                 }
             };
             XposedHelpers.findAndHookMethod(classVolumePanel, "shouldBeVisibleH",
@@ -119,8 +118,20 @@ public class VolumePanel {
     }
     public static void setVolumePanelLocation(int location) {
         mVolumePanelLocation = location;
+        if(mVolumePanel==null){
+            XposedBridge.log("setVolumePanelLocation:mVolumePanel=null");
+            return;
+        }
         Object mWindow = XposedHelpers.getObjectField(mVolumePanel,"mWindow");
+        if(mWindow==null) {
+            XposedBridge.log("setVolumePanelLocation:mWindow=null");
+            return;
+        }
         WindowManager.LayoutParams lp = (WindowManager.LayoutParams) XposedHelpers.callMethod(mWindow,"getAttributes");
+        if(lp==null) {
+            XposedBridge.log("setVolumePanelLocation:lp=null");
+            return;
+        }
         lp.gravity = ( mVolumePanelLocation==0 ? Gravity.LEFT : Gravity.RIGHT ) | Gravity.CENTER_VERTICAL;
         XposedHelpers.callMethod(mWindow,"setAttributes",lp);
     }
